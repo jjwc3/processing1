@@ -1,32 +1,35 @@
-bg1X = 0
-bg1Y = 0
-bg2X = 1080
-bg2Y = 0
 window = 0
-bgColorList = [[255, 255, 255], [255, 0, 0], [255, 127, 0], [255, 255, 0], [0, 255, 0], [0, 0, 255], [0, 0, 128], [180, 85, 162]]
-bgColor = 0
+level = 1
+sumScore = 0
+bestScore = 1
+
+# start
 startLevelY = 300
 startLevelSize = 80
 startColorY = 450
 startColorSize = 30
-level = 1
-sumScore = 0
-bestScore = 1
+bgColorList = [[255, 255, 255], [255, 0, 0], [255, 127, 0], [255, 255, 0], [0, 255, 0], [0, 0, 255], [0, 0, 128], [180, 85, 162]]
+bgColor = 0
+
+#game
+bg1X = 0
+bg2X = 1080
 playerY = 270
-obs1X = 1000
+obsX = 1000
 
 
 def setup():
-    global bg, player1, obstacle1
+    global bg, player1, obstacle1, player
     size(1080, 540)
-    bg = loadImage("background.png")
-    player1 = loadImage("p1.jpg")
+    bg = loadImage("sky1.png")
+    # player1 = loadImage("p1.jpg")
     obstacle1 = loadImage("1.png")
-    
+    player = []
+    for i in range(1, 13):
+        player.append(loadImage("p{}.png".format(i)))
+        
 def draw():
-    global bg, bg1X, bg1Y, bg2X, bg2Y, window, bgColorList, bgColor, startLevelY, startLevelSize, startColorY, startColorSize, level, sumScore, playerY
-    # print(bgColor)
-    background(bgColorList[bgColor][0], bgColorList[bgColor][1], bgColorList[bgColor][2])
+    global window
     if window == 0:
         start()
     elif window == 1:
@@ -35,13 +38,16 @@ def draw():
         
         
 def start():
-    global bg, bg1X, bg1Y, bg2X, bg2Y, window, bgColorList, bgColor, startLevelY, startLevelSize, startColorY, startColorSize, level, sumScore, bestScore
-    
+    global window, bgColorList, bgColor, startLevelY, startLevelSize, startColorY, startColorSize, level, sumScore, bestScore
+    background(bgColorList[bgColor][0], bgColorList[bgColor][1], bgColorList[bgColor][2])
     
     # Title
     textSize(70)
     textAlign(CENTER)
-    fill(0)
+    if bgColor in [0,3,4]:
+        fill(0)
+    else:
+        fill(255)
     text("Title", width/2, 200)
     
     # Score
@@ -86,10 +92,10 @@ def start():
 
     
 def game():
-    global bg, bg1X, bg1Y, bg2X, bg2Y, window, bgColorList, bgColor, level, player1, playerY, obstacle1, obs1X
+    global bg, bg1X, bg2X, window, level, playerY, obstacle1, obsX, player
     imageMode(CORNER)
-    image(bg, bg1X, bg1Y)
-    image(bg, bg2X, bg2Y)
+    image(bg, bg1X, 0, 1080, 675)
+    image(bg, bg2X, 0, 1080, 675)
     text(level, width/2, height/2)
     bg1X -= 5
     bg2X -= 5
@@ -99,17 +105,17 @@ def game():
         bg2X = 1080
     
     imageMode(CENTER)
-    image(player1, 100, playerY, 60, 100)
+    image(player[millis()/100%12], 100, playerY, 60, 100)
     
     if keyPressed:
-        if keyCode == UP:
+        if keyCode == UP and playerY>50:
             playerY -= 4
-        elif keyCode == DOWN:
+        elif keyCode == DOWN and playerY<490:
             playerY += 4
     
-    if obs1X>= -50:    
-        image(obstacle1, obs1X, height/2, 50, 50)
-        obs1X -= 8
+    if obsX>= -50:    
+        image(obstacle1, obsX, height/2, 50, 50)
+        obsX -= 8
     
     
     
