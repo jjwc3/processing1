@@ -16,10 +16,12 @@ bg1X = 0
 bg2X = 1080
 playerY = 270
 obsX = 1000
+spawnInterval = 1000
+obstacles = []
 
 
 def setup():
-    global bg, player1, obstacle1, player
+    global bg, player1, obstacle1, player, obstacle, lastSpawnTime
     size(1080, 540)
     bg = loadImage("sky1.png")
     # player1 = loadImage("p1.jpg")
@@ -27,6 +29,11 @@ def setup():
     player = []
     for i in range(1, 13):
         player.append(loadImage("p{}.png".format(i)))
+    obstacle = []
+    for i in range(1, 4):
+        obstacle.append(loadImage("obs{}.png".format(i)))
+        
+    lastSpawnTime = millis()
         
 def draw():
     global window
@@ -92,7 +99,7 @@ def start():
 
     
 def game():
-    global bg, bg1X, bg2X, window, level, playerY, obstacle1, obsX, player
+    global bg, bg1X, bg2X, window, level, playerY, obstacle1, obsX, player, obstacle, lastSpawnTime, spawnInterval, obstacles
     imageMode(CORNER)
     image(bg, bg1X, 0, 1080, 675)
     image(bg, bg2X, 0, 1080, 675)
@@ -109,14 +116,19 @@ def game():
     
     if keyPressed:
         if keyCode == UP and playerY>50:
-            playerY -= 4
+            playerY -= 8
         elif keyCode == DOWN and playerY<490:
-            playerY += 4
+            playerY += 8
+   
+    if millis() - lastSpawnTime > spawnInterval:
+        obstacles.append([int(random(0,3)), width, random(50, 490)])
+        lastSpawnTime = millis()
     
-    if obsX>= -50:    
-        image(obstacle1, obsX, height/2, 50, 50)
-        obsX -= 8
+    for i in obstacles:
+        i[1] -= 10
+        image(obstacle[i[0]], i[1], i[2], 50*obstacle[i[0]].width/obstacle[i[0]].height, 50)
     
-    
+    obstacles = [i for i in obstacles if i[1] > -obstacle[i[0]].width]
+        
     
     
